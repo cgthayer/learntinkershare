@@ -1,1 +1,244 @@
-<img src="images/LTS.webp">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learn, Tinker, Share - AI Engineering Community</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <style>
+        .gradient-text {
+            background: linear-gradient(120deg, #818CF8, #C7D2FE);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .glass-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .network-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background-color: #111827;
+            overflow: hidden;
+        }
+        .content-wrapper {
+            position: relative;
+            z-index: 1;
+        }
+        .node {
+            fill: #111827;
+            stroke: #10B981;
+            stroke-width: 2;
+            r: 4;
+        }
+        .link {
+            stroke: #10B981;
+            stroke-opacity: 0.2;
+            stroke-width: 1;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-100">
+    <div class="network-bg" id="network-bg"></div>
+
+    <div class="content-wrapper">
+        <nav class="bg-gray-900/80 backdrop-blur-sm border-b border-gray-800">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between h-16 items-center">
+                    <div class="flex-shrink-0">
+                        <span class="text-2xl font-bold gradient-text">LTS</span>
+                    </div>
+                    <div class="flex space-x-8">
+                        <a href="#" class="text-gray-300 hover:text-indigo-400">Learn</a>
+                        <a href="#" class="text-gray-300 hover:text-indigo-400">Tinker</a>
+                        <a href="#" class="text-gray-300 hover:text-indigo-400">Share</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <div class="text-center">
+                <h1 class="text-4xl sm:text-6xl font-bold mb-6">
+                    <span class="gradient-text">Learn, Tinker, Share</span>
+                    <span class="block text-gray-100 mt-2">for AI Engineering</span>
+                </h1>
+
+                <p><center><img width="300px" src="images/LTS.webp" /></center></p><br/>
+                
+                <div class="max-w-3xl mx-auto">
+                    <p class="text-xl text-gray-300 mb-12">
+                        AI is a complex new technology space, and the best and brightest want to learn and understand. 
+                        This is a space for builders of tech and businesses to learn, tinker, and share.
+                    </p>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                    <div class="glass-card p-8 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
+                        <h2 class="text-2xl font-semibold mb-4 text-indigo-300">For Engineers</h2>
+                        <p class="text-gray-300">
+                            Building production AI applications or technologies? Join a community of practitioners 
+                            sharing real-world experiences and solutions.
+                        </p>
+                    </div>
+
+                    <div class="glass-card p-8 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
+                        <h2 class="text-2xl font-semibold mb-4 text-indigo-300">For Leaders</h2>
+                        <p class="text-gray-300">
+                            Founders, CTOs, and leaders building technical teams and AI businesses will find 
+                            resources and connections to drive success.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="mt-12">
+                    <button class="bg-indigo-600 text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-indigo-700 transition-colors shadow-lg hover:shadow-xl">
+                        Join the Community
+                    </button>
+                </div>
+            </div>
+        </main>
+
+        <footer class="bg-gray-900/80 backdrop-blur-sm border-t border-gray-800 mt-16">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <div class="text-center text-gray-400">
+                    <div class="flex justify-center space-x-6 mb-4">
+                        <a href="#" class="hover:text-indigo-400">About</a>
+                        <a href="#" class="hover:text-indigo-400">Contact</a>
+                        <a href="#" class="hover:text-indigo-400">Terms</a>
+                        <a href="#" class="hover:text-indigo-400">Privacy</a>
+                    </div>
+                    <p>© 2024 Learn, Tinker, Share. All rights reserved.</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Wait for DOM to be ready
+        document.addEventListener('DOMContentLoaded', function() {
+            // Network simulation setup
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+            const nodeSpacing = 200; // Distance between nodes as specified
+            const springStrength = 0.003; // Adjusted for 30-second return
+            const randomForce = 0.5; // Random movement strength
+
+            // Calculate grid dimensions
+            const cols = Math.ceil(width / nodeSpacing) + 1;
+            const rows = Math.ceil(height / nodeSpacing) + 1;
+
+            // Generate nodes in hexagonal grid
+            const nodes = [];
+            const links = [];
+
+            for (let row = 0; row < rows; row++) {
+                for (let col = 0; col < cols; col++) {
+                    const x = col * nodeSpacing + (row % 2) * (nodeSpacing / 2);
+                    const y = row * (nodeSpacing * Math.sqrt(3) / 2);
+                    
+                    const node = {
+                        id: `node-${row}-${col}`,
+                        originalX: x,
+                        originalY: y,
+                        x: x + (Math.random() - 0.5) * 10, // Slight initial offset
+                        y: y + (Math.random() - 0.5) * 10,
+                        vx: 0,
+                        vy: 0
+                    };
+                    nodes.push(node);
+
+                    // Create links to existing neighbors
+                    nodes.forEach(otherNode => {
+                        const dx = node.x - otherNode.x;
+                        const dy = node.y - otherNode.y;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+                        if (distance > 0 && distance <= nodeSpacing * 1.1) {
+                            links.push({
+                                source: node,
+                                target: otherNode,
+                                originalLength: nodeSpacing
+                            });
+                        }
+                    });
+                }
+            }
+
+            // Create SVG
+            const svg = d3.select("#network-bg")
+                .append("svg")
+                .attr("width", width)
+                .attr("height", height);
+
+            // Create links and nodes
+            const link = svg.selectAll("line")
+                .data(links)
+                .enter()
+                .append("line")
+                .attr("class", "link");
+
+            const node = svg.selectAll("circle")
+                .data(nodes)
+                .enter()
+                .append("circle")
+                .attr("class", "node")
+                .attr("r", 4);
+
+            // Animation function
+            function simulate() {
+                // Update node positions
+                nodes.forEach(node => {
+                    // Random movement
+                    node.vx += (Math.random() - 0.5) * randomForce;
+                    node.vy += (Math.random() - 0.5) * randomForce;
+
+                    // Apply spring forces from links
+                    links.forEach(link => {
+                        if (link.source === node || link.target === node) {
+                            const other = link.source === node ? link.target : link.source;
+                            const dx = other.x - node.x;
+                            const dy = other.y - node.y;
+                            const distance = Math.sqrt(dx * dx + dy * dy);
+                            const force = (distance - link.originalLength) * springStrength;
+                            
+                            const fx = (dx / distance) * force;
+                            const fy = (dy / distance) * force;
+                            
+                            node.vx += fx;
+                            node.vy += fy;
+                        }
+                    });
+
+                    // Apply velocity with damping
+                    node.x += node.vx;
+                    node.y += node.vy;
+                    node.vx *= 0.99;
+                    node.vy *= 0.99;
+                });
+
+                // Update positions in DOM
+                node
+                    .attr("cx", d => d.x)
+                    .attr("cy", d => d.y);
+
+                link
+                    .attr("x1", d => d.source.x)
+                    .attr("y1", d => d.source.y)
+                    .attr("x2", d => d.target.x)
+                    .attr("y2", d => d.target.y);
+
+                requestAnimationFrame(simulate);
+            }
+
+            // Start simulation
+            simulate();
+        });
+    </script>
+</body>
+</html>
