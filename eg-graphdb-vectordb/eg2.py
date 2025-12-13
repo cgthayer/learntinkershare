@@ -17,10 +17,13 @@ def main():
             sim = cosine_similarity(embeddings[i], embeddings[j])
             print(f"* {data[i]:>20} <-> {data[j]:<20}: {sim:.4f}")
 
-    unexpected = "I like to sprint"
+    outdoor_vec = embedding_fn("I like outdoor activities")[0]
+    sim = cosine_similarity(outdoor_vec, embeddings[0])
+    print(f"Liking walking is {sim:.2f} similar to liking outdoor activities")
+
+    unexpected = "I like to sprinting"
     print(f"Similarity to \"{unexpected}\":")
     uvec = embedding_fn([unexpected])[0]  # unexpected vector (embedding)
-    data = ["I like to walk", "I like to run", "I like to hike"]
     for i in range(3):
         sim = cosine_similarity(uvec, embeddings[i])
         print(f"* {data[i]}: {sim:.2f}")
