@@ -1,2 +1,11 @@
 .ai-skills/
 *~
+
+# Never commit secrets / local env files
+.env
+.env.*
+!.env.example
+!*.env.sample
+
+# Log files (may contain sensitive runtime data)
+*.log
