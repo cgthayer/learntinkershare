@@ -27,17 +27,17 @@ class SubAgentManager:
         self.subagent_count = 0
 
     def run(self, task: str, tools: list[str]) -> str:
+        try:
+            agent_class, tool_objects, extra_imports = resolve(tools)
+        except UnknownToolError as e:
+            return f"Could not create sub-agent: {e}"
+
         if self.subagent_count >= self.max_workers:
             logger.warning("worker limit hit at %d", self.max_workers)
             return (
                 f"Worker limit reached ({self.max_workers} sub-agents already created). "
                 "Finish the task with the results you already have."
             )
-
-        try:
-            agent_class, tool_objects, extra_imports = resolve(tools)
-        except UnknownToolError as e:
-            return f"Could not create sub-agent: {e}"
 
         kind = "code" if agent_class is CodeAgent else "web"
         kwargs = {

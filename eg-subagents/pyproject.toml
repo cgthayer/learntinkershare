@@ -5,6 +5,7 @@ description = "smolagents dynamic sub-agent demo"
 requires-python = ">=3.11"
 dependencies = [
     "html2text>=2024.2.26",
+    "numpy>=1.26",
     "python-dotenv>=1.0.0",
     "requests>=2.31.0",
     "smolagents[litellm,toolkit]>=1.23.0",

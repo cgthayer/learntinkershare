@@ -21,7 +21,14 @@ CODE_CAPABILITY = "code"
 SPAWNABLE_NAMES = sorted([*WEB_TOOLS.keys(), CODE_CAPABILITY])
 
 # Never resolvable, even if a worker's task tries to request it.
-FORBIDDEN_TOOL_NAMES = {"spawn_subagent"}
+FORBIDDEN_TOOL_NAMES = {
+    "spawn_subagent",
+    "launch_async_subagent",
+    "async_subagent_status",
+    "async_subagent_all_output",
+    "async_subagent_output_since_last_checked",
+    "kill_async_subagent",
+}
 
 # Imports a code worker is allowed to use. Intentionally analytical, not I/O.
 CODE_IMPORTS = ["math", "statistics", "numpy", "fractions", "itertools"]
